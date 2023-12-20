@@ -1,8 +1,7 @@
 import server from "./server";
 import { secp256k1 as secp } from "ethereum-cryptography/secp256k1.js";
-import { utf8ToBytes, toHex } from "ethereum-cryptography/utils.js";
-import { useCallback, useEffect } from "react";
-import { keccak256 } from "ethereum-cryptography/keccak";
+import { toHex } from "ethereum-cryptography/utils.js";
+import { useEffect } from "react";
 import {
   signMessage,
   getAddress,
@@ -27,7 +26,6 @@ function Wallet({
       const message = self.crypto.randomUUID().toString();
       const signature = await signMessage(message, privateKey);
       console.log(privateKey);
-      //const address = calculateAddressFromPrivateKey(privateKey);
       try {
         if (address) {
           const {
@@ -122,7 +120,7 @@ function Wallet({
           onChange={handlePrivateKeyChange}
         ></input>
         {privKeyError && (
-          <div style={{ color: 'red' }}>incorrent private key</div>
+          <div style={{ color: 'red' }}>invalid private key</div>
         )}
       </label>
       <label>

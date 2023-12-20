@@ -9,9 +9,9 @@ app.use(cors());
 app.use(express.json());
 
 const balances = {
-  "0x1": 100,
-  "0x2": 50,
-  "0x3": 75,
+  "0x33e6cd73ec9fbfb43d24efef2b8f43cd71782fb2": 100,
+  "0x9f191771ebe5ecce963d575abbd7e2a11a3e7c41": 50,
+  "0xca66a4c41c744e6db224d120f1781fe5ab826b8e": 75,
 };
 
 function hashMessage(message) {
@@ -58,11 +58,13 @@ app.post("/balance/:address", (req, res) => {
 app.post("/send", (req, res) => {
   let { sender, recipient, amount, signature, message, publicKey, timestamp } =
     req.body;
-  if (verifyAction(message, publicKey, signature)) {
+    const [okay, parsedPublicKey] = verifyAction(message, publicKey, signature)
+  if (okay) {
     setInitialBalance(sender);
     setInitialBalance(recipient);
-
-    if (balances[sender] < amount) {
+    if(!balances[getAddress(parsedPublicKey)]){
+      res.status(400).send({message: "wrong private key"})
+    }else if (balances[sender] < amount) {
       res.status(400).send({ message: "Not enough funds!" });
     } else {
       balances[sender] -= amount;
