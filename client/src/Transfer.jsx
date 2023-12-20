@@ -1,7 +1,13 @@
 import { useState } from "react";
 import server from "./server";
+import {
+  signMessage,
+  getAddress,
+  calculateAddressFromPrivateKey,
+  serializeSignature,
+} from "./helperFunctions";
 
-function Transfer({ address, setBalance }) {
+function Transfer({ address, setBalance, privateKey }) {
   const [sendAmount, setSendAmount] = useState("");
   const [recipient, setRecipient] = useState("");
 
@@ -9,7 +15,11 @@ function Transfer({ address, setBalance }) {
 
   async function transfer(evt) {
     evt.preventDefault();
-
+    const message = self.crypto.randomUUID().toString()
+    if(!privateKey) alert("you have not provided a private key")
+    else {
+      const signature = await signMessage(message, privateKey)
+    }
     try {
       const {
         data: { balance },
