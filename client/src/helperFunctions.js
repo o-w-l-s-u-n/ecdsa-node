@@ -7,8 +7,7 @@ export async function signMessage(message, privKey) {
 }
 
 export function getAddress(publicKey) {
-  const slicedPublicKeyHash = keccak256(publicKey.slice(1));
-  return "0x" + toHex(slicedPublicKeyHash.slice(-20));
+  return "0x" + toHex(keccak256(publicKey.slice(1)).slice(-20))
 }
 
 export function calculateAddressFromPrivateKey(privKey) {

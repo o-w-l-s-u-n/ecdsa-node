@@ -6,31 +6,37 @@ import {
   calculateAddressFromPrivateKey,
   serializeSignature,
 } from "./helperFunctions";
-
+import { secp256k1 as secp } from "ethereum-cryptography/secp256k1.js";
 function Transfer({ address, setBalance, privateKey }) {
-  const [sendAmount, setSendAmount] = useState("");
+  const [sendAmount, setSendAmount] = useState('');
   const [recipient, setRecipient] = useState("");
 
   const setValue = (setter) => (evt) => setter(evt.target.value);
 
   async function transfer(evt) {
     evt.preventDefault();
-    const message = self.crypto.randomUUID().toString()
-    if(!privateKey) alert("you have not provided a private key")
+
+    if (!privateKey) alert("you have not provided a private key");
     else {
-      const signature = await signMessage(message, privateKey)
-    }
-    try {
-      const {
-        data: { balance },
-      } = await server.post(`send`, {
-        sender: address,
-        amount: parseInt(sendAmount),
-        recipient,
-      });
-      setBalance(balance);
-    } catch (ex) {
-      alert(ex.response.data.message);
+      const message = self.crypto.randomUUID().toString();
+      const signature = await signMessage(message, privateKey);
+      const serializedSignature = serializeSignature(signature);
+      try {
+        const {
+          data: { balance },
+        } = await server.post(`send`, {
+          sender: address,
+          amount: parseFloat(sendAmount),
+          recipient,
+          signature: serializedSignature,
+          message: message,
+          publicKey: secp.getPublicKey(privateKey),
+          timestamp: Date.now(),
+        });
+        setBalance(balance);
+      } catch (ex) {
+        alert(ex.response.data.message);
+      }
     }
   }
 

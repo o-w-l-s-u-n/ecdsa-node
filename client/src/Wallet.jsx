@@ -59,6 +59,7 @@ function Wallet({
   useEffect(() => {
     try {
       const address = calculateAddressFromPrivateKey(privateKey);
+      console.log('address: ', address )
       setAddress(address);
       setPrivKeyError(false);
     } catch (err) {
@@ -93,7 +94,7 @@ function Wallet({
         setAddress(address);
         setPrivateKey(newPrivateKey);
         alert(
-          'The new wallet have been created. Preess "Update balance" button to see a welcoming bonus'
+          'The new wallet have been created. Preess "Update balance" button to see a welcoming bonus 0.1 ETH'
         );
       }
     }
@@ -134,7 +135,7 @@ function Wallet({
       </label>
       <button onClick={requestBallance}>Update balance</button>
 
-      <div className="balance">Balance: {balance} ETH</div>
+      <div className="balance">Balance: {parseFloat(balance.toFixed(8))} ETH</div>
       <label>
         or
         <input
